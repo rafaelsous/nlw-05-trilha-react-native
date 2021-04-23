@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     padding: 10,
     fontFamily: fonts.complement,
-    fontSize: 17,
+    fontSize: 18,
     textAlign: 'center',
     lineHeight: 23,
     borderBottomWidth: 1,
