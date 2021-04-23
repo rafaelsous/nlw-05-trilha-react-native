@@ -17,7 +17,7 @@ interface EnvironmentProps {
 }
 
 interface PlantProps {
-  id: number;
+  id: string;
   name: string;
   photo: string;
   environments: [string];
@@ -54,7 +54,8 @@ export function PlantSelect() {
   }, [])
 
   async function loadPlants() {
-    const { data } = await api.get(`plants?_sort=name&_order=asc&_page=${page}&_limit=6`)
+    const { data, headers } = await api.get(`plants?_sort=name&_order=asc&_page=${page}&_limit=6`)
+    const totalCount = headers['x-total-count']
 
     if (!data)
       return setLoading(true)
@@ -88,6 +89,8 @@ export function PlantSelect() {
 
     setLoadMore(true)
     setPage(oldValue => oldValue + 1)
+
+    // TODO: Verificar o porquê de estar fazendo duas chamadas à API quando a lista é arrastada até o final
     loadPlants()
   }
 
@@ -110,6 +113,7 @@ export function PlantSelect() {
       <View>
         <FlatList
           data={environments}
+          keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
             <EnvironmentButton
               key={item.key}
@@ -127,6 +131,7 @@ export function PlantSelect() {
       <View style={styles.plants}>
         <FlatList
           data={filteredPlants}
+          keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
             <PlantCardPrimary
               key={item.id} 
@@ -174,6 +179,7 @@ const styles = StyleSheet.create({
   plants: {
     flex: 1,
     marginTop: 24,
+    marginBottom: 16,
     paddingHorizontal: 16,
   },
   plantList: {

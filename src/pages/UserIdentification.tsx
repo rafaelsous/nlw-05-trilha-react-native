@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { Button } from '../components/Button'
 
@@ -36,8 +37,11 @@ export function UserIdentification() {
     setName(value)
   }
 
-  function handleConfirm() {
-    navigate('Confirmation')
+  async function handleConfirm() {
+    if (name) {
+      await AsyncStorage.setItem('@plantmanager:user', name)
+      navigate('Confirmation')
+    }
   }
 
   return (
