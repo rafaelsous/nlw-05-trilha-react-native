@@ -8,25 +8,17 @@ import userImg from '../assets/rafael.jpeg'
 import fonts from '../styles/fonts'
 import colors from '../styles/colors'
 
-export function Header() {
-  const [userName, setUserName] = useState<string>()
+interface HeaderProps {
+  primaryText?: string;
+  secondaryText?: string;
+}
 
-  useEffect(() => {
-    async function loadStorageUserName() {
-      const user = await AsyncStorage.getItem('@plantmanager:user')
-      
-      if (user)
-        setUserName(user)
-    }
-
-    loadStorageUserName()
-  }, [])
-
+export function Header({ primaryText, secondaryText }: HeaderProps) {
   return(
     <View style={styles.container}>
       <View>
-        <Text style={styles.greeting}>Olá,</Text>
-        <Text style={styles.userName}>{userName}</Text>
+        <Text style={styles.greeting}>{primaryText}</Text>
+        <Text style={styles.userName}>{secondaryText}</Text>
       </View>
 
       <Image style={styles.avatar} source={userImg} />
@@ -39,7 +31,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: getStatusBarHeight(),
     paddingVertical: 20,
-    paddingHorizontal: 32,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
