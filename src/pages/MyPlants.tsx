@@ -6,11 +6,13 @@ import { ptBR } from 'date-fns/locale'
 import { Header } from '../components/Header'
 import { Spotlight } from '../components/Spotlight'
 import { PlantCardSecondary } from '../components/PlantCardSecondary'
+import { Loading } from '../components/Loading'
 
 import { PlantProps, loadPlants } from '../libs/storage'
 
 import fonts from '../styles/fonts'
 import colors from '../styles/colors'
+import { getBottomSpace } from 'react-native-iphone-x-helper'
 
 export function MyPlants() {
   const [plants, setPlants] = useState<PlantProps[]>([])
@@ -40,7 +42,9 @@ export function MyPlants() {
     loadStoragedPlants()
   }, [])
 
-  return (
+  return (loading ? (
+    <Loading />
+  ) : (
     <View style={styles.container}>
       <Header
         primaryText="Minhas"
@@ -60,24 +64,27 @@ export function MyPlants() {
       <View style={styles.plantsContainer}>
         <Text style={styles.title}>Próximas regadas</Text>
         
-        <FlatList
-          data={plants}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <PlantCardSecondary
-              key={item.id}
-              data={item}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flex: 1 }}
-          ItemSeparatorComponent={() => (
-            <View style={{ height: 10 }} />
-          )}
-        />
+        <View>
+          <FlatList
+            data={plants}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <PlantCardSecondary
+                key={item.id}
+                data={item}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => (
+              <View style={{ height: 10 }} />
+            )}
+            ListFooterComponent={() => (<View />)}
+            ListFooterComponentStyle={styles.footer}
+          />
+        </View>
       </View>
     </View>
-  )
+  ))
 }
 
 const styles = StyleSheet.create({
@@ -97,4 +104,7 @@ const styles = StyleSheet.create({
     color: colors.heading,
     textAlign: 'left'
   },
+  footer: {
+    height: getBottomSpace() + 60,
+  }
 })

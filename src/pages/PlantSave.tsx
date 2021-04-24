@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SvgFromUri } from 'react-native-svg'
 import { useNavigation, useRoute } from '@react-navigation/core'
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker'
@@ -64,53 +64,60 @@ export function PlantSave() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.plantInfo}>
-        <SvgFromUri
-          uri={plant.photo}
-          width={150}
-          height={150}
-        />
-
-        <Text style={styles.name}>{plant.name}</Text>
-
-        <Text style={styles.about}>{plant.about}</Text>
-      </View>
-
-      <View style={styles.controller}>
-        <Spotlight text={plant.water_tips} />
-
-        <Text style={styles.alertText}>
-          Escolha o melhor horário para ser lembrado:
-        </Text>
-        
-        {showDateTimePicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={selectedDateTime}
-            mode="time"
-            display="spinner"
-            onChange={handleChangeTime}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        flexGrow: 1
+      }}
+    >
+      <View style={styles.container}>
+        <View style={styles.plantInfo}>
+          <SvgFromUri
+            uri={plant.photo}
+            width={150}
+            height={150}
           />
-        )}
 
-        {Platform.OS === 'android' && (
-          <TouchableOpacity
-            style={styles.dateTimePickerButton}
-            onPress={handleOpenDateTimePickerForAndroid}
-          >
-            <Text style={styles.dateTimePickerText}>
-              {`Mudar ${format(selectedDateTime, 'HH:mm')}`}
-            </Text>
-          </TouchableOpacity>
-        )}
+          <Text style={styles.name}>{plant.name}</Text>
 
-        <Button
-          title="Cadastrar planta"
-          onPress={handleSave}
-        />
+          <Text style={styles.about}>{plant.about}</Text>
+        </View>
+
+        <View style={styles.controller}>
+          <Spotlight text={plant.water_tips} />
+
+          <Text style={styles.alertText}>
+            Escolha o melhor horário para ser lembrado:
+          </Text>
+          
+          {showDateTimePicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={selectedDateTime}
+              mode="time"
+              display="spinner"
+              onChange={handleChangeTime}
+            />
+          )}
+
+          {Platform.OS === 'android' && (
+            <TouchableOpacity
+              style={styles.dateTimePickerButton}
+              onPress={handleOpenDateTimePickerForAndroid}
+            >
+              <Text style={styles.dateTimePickerText}>
+                {`Mudar ${format(selectedDateTime, 'HH:mm')}`}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          <Button
+            title="Cadastrar planta"
+            onPress={handleSave}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -143,10 +150,10 @@ const styles = StyleSheet.create({
     color: colors.heading,
   },
   controller: {
-    backgroundColor: colors.white,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: getBottomSpace() || 20,
+    backgroundColor: colors.white,
   },
   alertText: {
     marginTop: 40,
