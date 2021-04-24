@@ -18,6 +18,9 @@ const AuthRoutes = () => (
       labelPosition: 'beside-icon',
       style: {
         height: 88,
+      },
+      labelStyle: {
+        fontSize: 16,
       }
     }}
   >
@@ -43,9 +46,9 @@ const AuthRoutes = () => (
           <MaterialIcons
             name="format-list-bulleted"
             size={size}
-            color={color}  
+            color={color}
           />
-        ))
+        )),
       }}
     />
   </Navigator>
