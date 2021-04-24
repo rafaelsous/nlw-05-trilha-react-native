@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -39,8 +40,12 @@ export function UserIdentification() {
 
   async function handleConfirm() {
     if (name) {
-      await AsyncStorage.setItem('@plantmanager:user', name)
-      navigate('Confirmation')
+      try {
+        await AsyncStorage.setItem('@plantmanager:user', name)
+        navigate('Confirmation')
+      } catch (error) {
+        Alert.alert('Não foi possível salvar o seu nome 😢')
+      }
     }
   }
 

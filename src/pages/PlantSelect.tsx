@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import  { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
+import { useNavigation } from '@react-navigation/core'
 
 import { Header } from '../components/Header'
 import { EnvironmentButton } from '../components/EnvironmentButton'
 import { PlantCardPrimary } from '../components/PlantCardPrimary'
 import { Loading } from '../components/Loading'
+
+import { PlantProps } from '../libs/storage'
 
 import api from '../services/api'
 
@@ -16,13 +19,6 @@ interface EnvironmentProps {
   title: string;
 }
 
-interface PlantProps {
-  id: string;
-  name: string;
-  photo: string;
-  environments: [string];
-}
-
 export function PlantSelect() {
   const [environments, setEnvironments] = useState<EnvironmentProps[]>([])
   const [plants, setPlants] = useState<PlantProps[]>([])
@@ -32,6 +28,7 @@ export function PlantSelect() {
   const [page, setPage] = useState(1)
   const [loadMore, setLoadMore] = useState(false)
   const [loadAll, setLoadAll] = useState(false)
+  const { navigate } = useNavigation()
 
   useEffect(() => {
     async function loadEnvironments() {
@@ -94,6 +91,10 @@ export function PlantSelect() {
     loadPlants()
   }
 
+  function handleSelectPlant(plant: PlantProps) {
+    navigate('PlantSave', { plant })
+  }
+
   return (loading ? (
     <Loading />
   ) : (
@@ -136,6 +137,7 @@ export function PlantSelect() {
             <PlantCardPrimary
               key={item.id} 
               data={item}
+              onPress={() => handleSelectPlant(item)}
             />
           )}
           showsVerticalScrollIndicator={false}
