@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import  { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { Header } from '../components/Header'
 import { EnvironmentButton } from '../components/EnvironmentButton'
@@ -28,7 +29,20 @@ export function PlantSelect() {
   const [page, setPage] = useState(1)
   const [loadMore, setLoadMore] = useState(false)
   const [loadAll, setLoadAll] = useState(false)
+  const [userName, setUserName] = useState<string>()
+
   const { navigate } = useNavigation()
+
+  useEffect(() => {
+    async function loadStorageUserName() {
+      const user = await AsyncStorage.getItem('@plantmanager:user')
+      
+      if (user)
+        setUserName(user)
+    }
+
+    loadStorageUserName()
+  }, [])
 
   useEffect(() => {
     async function loadEnvironments() {
@@ -99,7 +113,10 @@ export function PlantSelect() {
     <Loading />
   ) : (
     <View style={styles.container}>
-      <Header />
+      <Header
+        primaryText="Olá,"
+        secondaryText={userName}
+      />
 
       <View style={styles.textContainer}>
         <Text style={styles.strongTitle}>
@@ -142,12 +159,18 @@ export function PlantSelect() {
           )}
           showsVerticalScrollIndicator={false}
           numColumns={2}
-          contentContainerStyle={styles.plantList}
+          columnWrapperStyle={styles.wrapperColumnList}
+          ItemSeparatorComponent={() => (
+            <View style={{ height: 16 }} />
+          )}
           onEndReachedThreshold={0.1}
           onEndReached={({ distanceFromEnd }) => handleLoadMore(distanceFromEnd)}
           ListFooterComponent={
-            loadMore ? <ActivityIndicator color={colors.green} /> : <></>
+            loadMore ? <ActivityIndicator color={colors.green} size={26} /> : <></>
           }
+          ListFooterComponentStyle={{ 
+            paddingVertical: loadMore ? 10 : 0
+          }}
         />
       </View>
     </View>
@@ -157,10 +180,10 @@ export function PlantSelect() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 30,
     backgroundColor: colors.background,
   },
   textContainer: {
-    paddingHorizontal: 32,
   },
   strongTitle: {
     marginTop: 40,
@@ -176,15 +199,12 @@ const styles = StyleSheet.create({
   },
   environmentList: {
     marginTop: 24,
-    paddingHorizontal: 32,
   },
   plants: {
     flex: 1,
-    marginTop: 24,
-    marginBottom: 16,
-    paddingHorizontal: 16,
+    marginTop: 40,
   },
-  plantList: {
+  wrapperColumnList: {
     justifyContent: 'space-between',
   }
 })

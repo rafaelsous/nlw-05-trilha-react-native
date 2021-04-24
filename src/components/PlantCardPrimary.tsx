@@ -33,10 +33,8 @@ export function PlantCardPrimary({ data, ...rest }: ButtonProps) {
 const styles = StyleSheet.create({
   button: {
     flex: 1,
-    maxWidth: 148,
-    width: 148,
+    maxWidth: '47%',
     height: 154,
-    margin: 16,
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: colors.shape,

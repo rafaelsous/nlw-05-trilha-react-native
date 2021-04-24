@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SvgFromUri } from 'react-native-svg'
-import { useRoute } from '@react-navigation/core'
+import { useNavigation, useRoute } from '@react-navigation/core'
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import { format, isBefore } from 'date-fns'
 
 import { Button } from '../components/Button'
+import { Spotlight } from '../components/Spotlight'
 
-import { PlantProps, savePlant, loadPlants } from '../libs/storage'
-
-import waterDropImg from '../assets/waterdrop.png'
+import { ConfirmationParams } from './Confirmation'
+import { PlantProps, savePlant } from '../libs/storage'
 
 import fonts from '../styles/fonts'
 import colors from '../styles/colors'
@@ -24,6 +24,7 @@ export function PlantSave() {
   const [showDateTimePicker, setShowDateTimePicker] = useState(Platform.OS === 'ios')
   const route =  useRoute();
   const { plant } = route.params as Params;
+  const { navigate } = useNavigation()
 
   function handleChangeTime(event: Event, dateTime: Date | undefined) {
     if (Platform.OS === 'android') {
@@ -49,6 +50,14 @@ export function PlantSave() {
         ...plant,
         dateTimeNotification: selectedDateTime,
       })
+
+      navigate('Confirmation', {
+        title: 'Tudo certo',
+        subtitle: 'Fique tranquilo que sempre vamos lembrar você de cuidar da sua plantinha com bastante amor.',
+        buttonTitle: 'Muito obrigado :D',
+        icon: 'hug',
+        nextPage: 'MyPlants'
+      } as ConfirmationParams)
     } catch (error) {
       Alert.alert('Não foi possível salvar sua plantinha 😢')
     }
@@ -69,16 +78,7 @@ export function PlantSave() {
       </View>
 
       <View style={styles.controller}>
-        <View style={styles.tipContainer}>
-          <Image
-            source={waterDropImg}
-            style={styles.tipImage}  
-          />
-
-          <Text style={styles.tipText}>
-            {plant.water_tips}
-          </Text>
-        </View>
+        <Spotlight text={plant.water_tips} />
 
         <Text style={styles.alertText}>
           Escolha o melhor horário para ser lembrado:
@@ -147,28 +147,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: getBottomSpace() || 20,
-  },
-  tipContainer: {
-    position: 'relative',
-    bottom: 70,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.blue_light,
-    borderRadius: 20,
-  },
-  tipImage: {
-    width: 56,
-    height: 56,
-    marginRight: 24,
-  },
-  tipText: {
-    flex: 1,
-    fontFamily: fonts.text,
-    fontSize: 16,
-    lineHeight: 23,
-    color: colors.blue,
   },
   alertText: {
     marginTop: 40,
